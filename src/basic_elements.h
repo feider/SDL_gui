@@ -9,6 +9,8 @@
 #include <list>
 #include <iostream>
 
+#include "input.h"
+
 
 enum SDL_Border_Style
 {
@@ -28,18 +30,8 @@ void GUI_Init(SDL_Surface * screen);
 
 class Clickable
 {
-public:
-	void (*on_click)(void);
+public:;
 private:
-};
-
-class Text_Container
-{
-public:
-	void set_text(std::string text);
-	std::string get_text();
-	void set_font(TTF_Font * font);
-	void set_text_colour(Uint8 r, Uint8 g, Uint8 b);
 };
 
 
@@ -61,21 +53,57 @@ public:
 	inline int get_y(){return this->y;}
 
 
-	inline int set_ID(int ID){this->ID = ID;}
-	inline int set_width(int width){this->width = width;}
-	inline int set_height(int height){this->height = height;}
-	inline int set_x(int x){this->x = x;}
-	inline int set_y(int y){this->y = y;}
+	inline void set_ID(int ID){this->ID = ID;}
+	inline void set_width(int width){this->width = width;}
+	inline void set_height(int height){this->height = height;}
+	inline void set_x(int x){this->x = x;}
+	inline void set_y(int y){this->y = y;}
 
-	virtual SDL_Surface* get_sdl_surface(){};
+	virtual SDL_Surface* get_sdl_surface(){ return NULL; }
 	virtual void update(){};
 
 	inline void set_colour(Uint8 r, Uint8 g, Uint8 b){ this->colour = SDL_MapRGB(GUI_screen->format, r, g, b); }
 	inline void set_border_colour(Uint8 r, Uint8 g, Uint8 b){ this->border_colour = SDL_MapRGB(GUI_screen->format, r, g, b);	}
 	inline void set_border_style(SDL_Border_Style style) { this->border_style=style; }
 
-	void set_parent(Widget * parent);
-	Widget * get_parent();
+	inline void set_parent(Widget * parent)
+	{ 
+		this->parent = parent;
+		if(parent)
+		{
+			parent->add_child(this);
+		}
+	}
+
+	inline Widget * get_parent()
+	{ 
+		return this->parent; 
+	}
+
+	bool visible;
+	bool active;
+
+	bool clicked;
+	bool released;
+
+	bool focused;
+
+	inline int absolute_x()
+	{
+		if(this->parent == NULL)
+			return 0;
+		else
+			return parent->absolute_x()+this->get_x();
+	}
+
+	inline int absolute_y()
+	{
+		if(this->parent == NULL)
+			return 0;
+		else
+			return parent->absolute_y()+this->get_y();
+	}
+	
 
 	inline void add_child(Widget * child)
 	{

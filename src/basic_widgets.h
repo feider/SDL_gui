@@ -11,8 +11,6 @@ public:
 
 	Area(int x, int y, int width, int height);
 	Area(int x, int y, int width, int height, Widget * parent);
-	void set_parent(Widget * parent);
-	Widget * get_parent();
 
 	void update();
 protected:
@@ -28,12 +26,10 @@ private:
 
 
 
-class Label: public Widget, Text_Container
+class Label: public Widget
 {
 public:
 	SDL_Surface* get_sdl_surface();
-	void set_parent(Widget * parent);
-	Widget * get_parent();
 
 
 	Label(int x, int y, int width, int height);
@@ -64,14 +60,66 @@ private:
 
 
 
-class Button: public Widget, Clickable, Text_Container
+class Button: public Widget
 {
-	
+public:
+	SDL_Surface* get_sdl_surface();
+
+
+	Button(int x, int y, int width, int height);	
+	Button(int x, int y, int width, int height, Widget * parent);
+
+	//From Text Container
+	void set_text(std::string text){this->text = text;}
+	std::string get_text(){return this->text;}
+	void set_font(TTF_Font * font){this->font = font;};
+	void set_text_colour(Uint8 r, Uint8 g, Uint8 b){ this->text_colour = new SDL_Color({r, g, b, 0}); }
+
+
+	void update();
+
+private:
+	SDL_Color * text_colour;
+	std::string text;
+	TTF_Font * font;
 };
 
-class Text_Field: public Widget, Text_Container
-{
 
+// One line text edit
+class Text_Edit: public Widget
+{
+public:
+	SDL_Surface* get_sdl_surface();
+
+
+	Text_Edit(int x, int y, int width, int height);	
+	Text_Edit(int x, int y, int width, int height, Widget * parent);
+
+	bool focused;
+	bool typing;
+
+
+
+	//From Text Container
+	void set_text(std::string text){this->text = text;}
+	std::string get_text(){return this->text;}
+	void set_font(TTF_Font * font){this->font = font;};
+	void set_text_colour(Uint8 r, Uint8 g, Uint8 b){ this->text_colour = new SDL_Color({r, g, b, 0}); }
+
+	
+	void update();
+
+private:
+	SDL_Color * text_colour;
+	std::string text;
+	TTF_Font * font;
+};
+
+
+
+
+class Text_Field: public Widget
+{
 };
 
 #endif
